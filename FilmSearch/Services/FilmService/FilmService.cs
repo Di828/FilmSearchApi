@@ -16,6 +16,35 @@ namespace FilmSearch.Services.FilmService
             _context = context;
         }
 
+        public async Task<ServiceResponse<List<GetFilmDto>>> GetAllFilms()
+        {
+            var serviceResponse = new ServiceResponse<List<GetFilmDto>>();
+            var dbFilms = await _context.Films
+                .Include(c => c.Actors)
+                .ToListAsync();
+            serviceResponse.Data = CreateResponse(dbFilms);
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<GetFilmDto>> GetSingleFilm(int id)
+        {
+            var serviceResponse = new ServiceResponse<GetFilmDto>();
+            var dbFilm = await _context.Films
+                .Include(c => c.Actors)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (dbFilm is null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "There is no movie with this id.";
+                return serviceResponse;
+            }
+
+            serviceResponse.Data = CreateSingleResponse(dbFilm);
+
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse<List<GetFilmDto>>> AddFilm(AddFilmDto newFilm)
         {            
             var serviceResponse = new ServiceResponse<List<GetFilmDto>>();
@@ -44,56 +73,6 @@ namespace FilmSearch.Services.FilmService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<GetFilmDto>>> DeleteFilm(int id)
-        {
-            var serviceResponse = new ServiceResponse<List<GetFilmDto>>();            
-            var film = await _context.Films.FirstOrDefaultAsync(x => x.Id == id);
-            if (film is null)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = "There is no movie with this id.";
-                return serviceResponse;
-            }
-            else
-            {
-                _context.Films.Remove(film);
-                await _context.SaveChangesAsync();                
-            }
-
-            serviceResponse.Data = CreateResponse(_context.Films.Include(c => c.Actors).ToList());
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<List<GetFilmDto>>> GetAllFilms()
-        {
-            var serviceResponse = new ServiceResponse<List<GetFilmDto>>();
-            var dbFilms = await _context.Films
-                .Include(c => c.Actors)
-                .ToListAsync();
-            serviceResponse.Data = CreateResponse(dbFilms);
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<GetFilmDto>> GetSingleFilm(int id)
-        {
-            var serviceResponse = new ServiceResponse<GetFilmDto>();
-            var dbFilm = await _context.Films
-                .Include(c => c.Actors)
-                .FirstOrDefaultAsync(x => x.Id == id);
-            if (dbFilm is null)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = "There is no movie with this id.";
-                return serviceResponse;
-            }
-
-            serviceResponse.Data = CreateSingleResponse(dbFilm);         
-
-            return serviceResponse;
-        }
-
         public async Task<ServiceResponse<GetFilmDto>> UpdateFilm(UpdateFilmDto request)
         {
             var serviceResponse = new ServiceResponse<GetFilmDto>();
@@ -116,10 +95,31 @@ namespace FilmSearch.Services.FilmService
             else
             {
                 film.Title = request.Title;
-                await _context.SaveChangesAsync();                
+                await _context.SaveChangesAsync();
             }
 
             serviceResponse.Data = CreateSingleResponse(film);
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<List<GetFilmDto>>> DeleteFilm(int id)
+        {
+            var serviceResponse = new ServiceResponse<List<GetFilmDto>>();            
+            var film = await _context.Films.FirstOrDefaultAsync(x => x.Id == id);
+            if (film is null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "There is no movie with this id.";
+                return serviceResponse;
+            }
+            else
+            {
+                _context.Films.Remove(film);
+                await _context.SaveChangesAsync();                
+            }
+
+            serviceResponse.Data = CreateResponse(_context.Films.Include(c => c.Actors).ToList());
 
             return serviceResponse;
         }

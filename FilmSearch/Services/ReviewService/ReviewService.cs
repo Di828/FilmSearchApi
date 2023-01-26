@@ -11,66 +11,9 @@ namespace FilmSearch.Services.ReviewService
             _context = context;
         }
 
-        public async Task<ServiceResponse<List<GetReviewDto>>> AddReview(int filmId, AddReviewDto newReview)
-        {
-            var serviceResponse = new ServiceResponse<List<GetReviewDto>>();
-            var film = await _context.Films.FirstOrDefaultAsync(x => x.Id == filmId);
-            if (film is null)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = "There is no movie with this id.";
-                return serviceResponse;
-            }
-
-            var review = new Review
-            {
-                FilmId = filmId,
-                Description = newReview.Description,
-                Stars = newReview.Stars,
-                Title = newReview.Title,
-                ReviewedFilm = film
-            };
-
-            _context.Reviews.Add(review);
-            await _context.SaveChangesAsync();
-
-            serviceResponse.Data = await CreateResponse(await _context.Reviews.ToListAsync());
-
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<List<GetReviewDto>>> DeleteReview(int filmId, int id)
-        {
-            var serviceResponse = new ServiceResponse<List<GetReviewDto>>();            
-            var film = await _context.Films.FirstOrDefaultAsync(x => x.Id == filmId);
-            if (film is null)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = "There is no movie with this id.";
-                return serviceResponse;
-            }
-
-            var review = await _context.Reviews.FirstOrDefaultAsync(x => x.Id == id);
-            if (review is null)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = "There is no review with this id.";
-                return serviceResponse;
-            }
-            else
-            {
-                _context.Reviews.Remove(review);
-                await _context.SaveChangesAsync();
-            }            
-
-            serviceResponse.Data = await CreateResponse(await _context.Reviews.Where(x => x.FilmId == filmId).ToListAsync());
-
-            return serviceResponse;
-        }
-
         public async Task<ServiceResponse<List<GetReviewDto>>> GetAllReviewsOnFilm(int filmId)
-        {            
-            ServiceResponse<List<GetReviewDto>> serviceResponse = new ServiceResponse<List<GetReviewDto>>();            
+        {
+            ServiceResponse<List<GetReviewDto>> serviceResponse = new ServiceResponse<List<GetReviewDto>>();
             var reviews = await _context.Reviews.Where(x => x.FilmId == filmId).ToListAsync();
             if (reviews.Count == 0)
             {
@@ -110,6 +53,36 @@ namespace FilmSearch.Services.ReviewService
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<List<GetReviewDto>>> AddReview(int filmId, AddReviewDto newReview)
+        {
+            var serviceResponse = new ServiceResponse<List<GetReviewDto>>();
+            var film = await _context.Films.FirstOrDefaultAsync(x => x.Id == filmId);
+            if (film is null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "There is no movie with this id.";
+                return serviceResponse;
+            }
+
+            var review = new Review
+            {
+                FilmId = filmId,
+                Description = newReview.Description,
+                Stars = newReview.Stars,
+                Title = newReview.Title,
+                ReviewedFilm = film
+            };
+
+            _context.Reviews.Add(review);
+            await _context.SaveChangesAsync();
+
+            var reviews = await _context.Reviews.Where(x => x.FilmId == filmId).ToListAsync();
+
+            serviceResponse.Data = await CreateResponse(reviews);
+
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse<GetReviewDto>> UpdateReview(int filmId, UpdateReviewDto request)
         {
             var serviceResponse = new ServiceResponse<GetReviewDto>();
@@ -131,7 +104,7 @@ namespace FilmSearch.Services.ReviewService
             else
             {
                 UpdateReview(review, request);
-                await _context.SaveChangesAsync();                
+                await _context.SaveChangesAsync();
             }
 
             serviceResponse.Data = await CreateSingleResponse(review);
@@ -139,7 +112,36 @@ namespace FilmSearch.Services.ReviewService
             return serviceResponse;
         }
 
-        private void UpdateReview(Review review, UpdateReviewDto request)
+        public async Task<ServiceResponse<List<GetReviewDto>>> DeleteReview(int filmId, int id)
+        {
+            var serviceResponse = new ServiceResponse<List<GetReviewDto>>();            
+            var film = await _context.Films.FirstOrDefaultAsync(x => x.Id == filmId);
+            if (film is null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "There is no movie with this id.";
+                return serviceResponse;
+            }
+
+            var review = await _context.Reviews.FirstOrDefaultAsync(x => x.Id == id);
+            if (review is null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "There is no review with this id.";
+                return serviceResponse;
+            }
+            else
+            {
+                _context.Reviews.Remove(review);
+                await _context.SaveChangesAsync();
+            }            
+
+            serviceResponse.Data = await CreateResponse(await _context.Reviews.Where(x => x.FilmId == filmId).ToListAsync());
+
+            return serviceResponse;
+        }
+
+        private static void UpdateReview(Review review, UpdateReviewDto request)
         {
             review.Description = request.Description;
             review.Stars = request.Stars;

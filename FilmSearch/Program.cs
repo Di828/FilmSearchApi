@@ -8,6 +8,9 @@ using FilmSearch.Services.FilmService;
 using Microsoft.EntityFrameworkCore;
 using FilmSearch.Services.ReviewService;
 using FilmSearch.Services.ActorService;
+using LoggerService;
+using Microsoft.AspNetCore.Diagnostics;
+using FilmSearch.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,12 +20,20 @@ builder.Services.AddDbContext<DataContext>(options => {
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+NLog.LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+builder.Services.AddSingleton<ILoggerManager, LoggerManager>();
+
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 builder.Services.AddScoped<IFilmService, FilmService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IActorService, ActorService>();
 
 var app = builder.Build();
+
+var logger = app.Services.GetRequiredService<ILoggerManager>();
+app.ConfigureExceptionHandler(logger);
 
 if (app.Environment.IsDevelopment())
 {
