@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FilmSearch", "FilmSearch\Fi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerService", "LoggerService\LoggerService.csproj", "{A21341E9-B15C-4E39-B422-BBA26E6EA0BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilmSearch.Test", "FilmSearch.Test\FilmSearch.Test.csproj", "{DEA6DFDA-B1EB-452F-A879-DC7F0D20EE72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A21341E9-B15C-4E39-B422-BBA26E6EA0BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A21341E9-B15C-4E39-B422-BBA26E6EA0BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A21341E9-B15C-4E39-B422-BBA26E6EA0BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEA6DFDA-B1EB-452F-A879-DC7F0D20EE72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEA6DFDA-B1EB-452F-A879-DC7F0D20EE72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEA6DFDA-B1EB-452F-A879-DC7F0D20EE72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEA6DFDA-B1EB-452F-A879-DC7F0D20EE72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

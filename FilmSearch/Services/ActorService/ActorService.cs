@@ -16,6 +16,13 @@ namespace FilmSearch.Services.ActorService
             var dbActors = await _context.Actors
                 .Include(c => c.Films)
                 .ToListAsync();
+            if (dbActors.Count == 0)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Database is empty.";
+                return serviceResponse;
+            }
+
             serviceResponse.Data = CreateResponse(dbActors);
 
             return serviceResponse;
@@ -30,7 +37,7 @@ namespace FilmSearch.Services.ActorService
             if (dbActor is null)
             {
                 serviceResponse.Success = false;
-                serviceResponse.Message = "There is no actor with this id.";
+                serviceResponse.Message = "There is no actor with this id or db is empty.";
                 return serviceResponse;
             }
 
