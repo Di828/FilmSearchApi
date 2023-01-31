@@ -30,7 +30,7 @@ namespace FilmSearch.Test.MockData
                 } },
         };
 
-        private static List<GetActorDto> actorsList = new List<GetActorDto>
+        private static List<GetActorDto> _actorsList = new List<GetActorDto>
         {
                 new GetActorDto() { Id = 1, FirstName = "First Actor", LastName = "LN", Films = new List<string> {"First Film"} },
                 new GetActorDto() { Id = 2, FirstName = "Second Actor", LastName = "LN", Films = new List<string> {"Second Film"} },
@@ -39,7 +39,7 @@ namespace FilmSearch.Test.MockData
         public static ServiceResponse<List<GetActorDto>> GetAllActorsDto()
         {
             var response = new ServiceResponse<List<GetActorDto>>();            
-            response.Data = actorsList;
+            response.Data = _actorsList;
 
             return response;
         }
@@ -56,7 +56,7 @@ namespace FilmSearch.Test.MockData
         public static ServiceResponse<GetActorDto> GetSingleActorCorrect(int id)
         {
             var response = new ServiceResponse<GetActorDto>();
-            response.Data = actorsList[0];
+            response.Data = _actorsList[0];
 
             return response;
         }
@@ -72,7 +72,7 @@ namespace FilmSearch.Test.MockData
         public static ServiceResponse<List<GetActorDto>> AddActorCorrect(AddActorDto newActor)
         {
             var response = new ServiceResponse<List<GetActorDto>>();
-            response.Data = actorsList;
+            response.Data = _actorsList;
 
             return response;
         }
@@ -89,7 +89,7 @@ namespace FilmSearch.Test.MockData
         public static ServiceResponse<GetActorDto> UpdateActorCorrect(UpdateActorDto newActor)
         {
             var response = new ServiceResponse<GetActorDto>();
-            response.Data = actorsList[1];
+            response.Data = _actorsList[1];
 
             return response;
         }
@@ -107,7 +107,7 @@ namespace FilmSearch.Test.MockData
         public static ServiceResponse<List<GetActorDto>> DeleteActorCorrect(int id)
         {
             var response = new ServiceResponse<List<GetActorDto>>();
-            response.Data = actorsList;
+            response.Data = _actorsList;
 
             return response;
         }
